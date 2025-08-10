@@ -30,7 +30,7 @@ const (
 const (
 	Title   string = "PILOT LOGBOOK"
 	Name    string = "HOLDER'S NAME:"
-	License string = "LICENSE NUMBER:"
+	License string = "ARN:"
 	Address string = "ADDRESS:"
 )
 
@@ -56,6 +56,7 @@ var HeaderBG = NewColor(217, 217, 217)
 var HeaderText = NewColor(0, 0, 0)
 var BodyFillBG = NewColor(228, 228, 228)
 var BodyText = NewColor(0, 0, 0)
+var SignatureBG = NewColor(0, 0, 0)
 
 // Constants for font sizes
 const (
@@ -554,11 +555,14 @@ func (p *PDFExporter) printFooterSignatureBlock(totalName string) {
 			// let's save the coordinates
 			p.signatureBlockX, p.signatureBlockY = p.pdf.GetXY()
 			// and put empty filled box
+			p.pdf.SetFillColor(SignatureBG.r, SignatureBG.g, SignatureBG.b)
 			p.pdf.CellFormat(p.columns.w4[17], p.Export.FooterRow, "", "LTR", 0, "C", true, 0, "")
 		} else {
+			p.pdf.SetFillColor(SignatureBG.r, SignatureBG.g, SignatureBG.b)
 			p.pdf.CellFormat(p.columns.w4[17], p.Export.FooterRow, p.Signature, "LTR", 0, "C", true, 0, "")
 		}
 	} else if totalName == FooterPreviousPage {
+		p.pdf.SetFillColor(SignatureBG.r, SignatureBG.g, SignatureBG.b)
 		p.pdf.CellFormat(p.columns.w4[17], p.Export.FooterRow, "", "LR", 0, "", true, 0, "")
 
 		if p.Export.IsExtended {
@@ -573,13 +577,15 @@ func (p *PDFExporter) printFooterSignatureBlock(totalName string) {
 				rowH = p.Export.FooterRow / 2
 			}
 			p.pdf.SetXY(p.signatureBlockX, p.signatureBlockY)
+			p.pdf.SetFillColor(SignatureBG.r, SignatureBG.g, SignatureBG.b)
 			p.pdf.MultiCell(p.columns.w4[17], rowH, strings.TrimRight(p.Signature, "\r\n"), "LTR", "C", true)
 			p.pdf.SetXY(x, y)
 			// empty tiny cell to set the footerRowHeight back
 			p.pdf.CellFormat(0.01, p.Export.FooterRow, "", "", 0, "", true, 0, "")
 		}
 	} else {
-		p.pdf.CellFormat(p.columns.w4[17], p.Export.FooterRow, p.OwnerName, "LBR", 0, "C", true, 0, "")
+		p.pdf.SetFillColor(SignatureBG.r, SignatureBG.g, SignatureBG.b)
+		p.pdf.CellFormat(p.columns.w4[17], p.Export.FooterRow, "", "LBR", 0, "C", true, 0, "")
 		p.printSignature()
 	}
 }
